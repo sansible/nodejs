@@ -1,0 +1,26 @@
+---
+
+- name: Test Node.js installation
+  hosts: all
+
+  pre_tasks:
+    - name: Update apt
+      become: yes
+      apt:
+        cache_valid_time: 1800
+        update_cache: yes
+      tags:
+        - build
+
+  roles:
+    - role: sansible.nodejs
+      nodejs:
+        version: 4
+
+  post_tasks:
+    - name: Check node 4 version
+      command: node --version
+      register: command_result4
+      failed_when: "'v4.' not in command_result4.stdout"
+      tags:
+        - assert

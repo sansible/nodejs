@@ -1,0 +1,13 @@
+---
+
+- name: Install node.js
+  include: build.yml
+  tags:
+    - build
+
+- name: configure noop
+  command: touch /tmp/sansible.nodejs.configure
+  args:
+    creates: /tmp/sansible.nodejs.configure
+  tags:
+    - configure

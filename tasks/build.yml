@@ -1,0 +1,27 @@
+---
+
+- name: Import the NodeSource GPG key into apt
+  become: yes
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: Add NodeSource deb repository
+  become: yes
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ nodejs.version }}.x {{ ansible_distribution_release }} main"
+    state: present
+
+- name: Install Node.js
+  become: yes
+  apt:
+    name: "nodejs={{ nodejs.version }}.*"
+    state: present
+
+- name: Symlink nodejs to node
+  become: yes
+  file:
+    dest: /usr/sbin/node
+    force: yes
+    src: /usr/sbin/nodejs
+    state: link

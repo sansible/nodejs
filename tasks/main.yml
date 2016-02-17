@@ -6,8 +6,8 @@
     - build
 
 - name: configure noop
-  command: touch /tmp/sansible.nodejs.configure
-  args:
-    creates: /tmp/sansible.nodejs.configure
+  file:
+    path: /tmp/sansible.nodejs.configure
+    state: touch
   tags:
     - configure

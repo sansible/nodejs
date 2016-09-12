@@ -54,7 +54,7 @@ This role uses two tags: **build** and **configure**
 
 ## Examples
 
-To simply install latest LTS version:
+Simply install latest LTS version.
 
 ```YAML
 - name: Install Node.js

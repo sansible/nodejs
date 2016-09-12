@@ -1,9 +1,15 @@
 ---
 
+- name: Download GPG key
+  command: curl -LO https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+  args:
+    chdir: /tmp
+    creates: /tmp/nodesource.gpg.key
+
 - name: Import the NodeSource GPG key into apt
   become: yes
   apt_key:
-    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    file: /tmp/nodesource.gpg.key
     state: present
 
 - name: Add NodeSource deb repository

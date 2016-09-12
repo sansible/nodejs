@@ -5,6 +5,7 @@
   tags:
     - build
 
+  # `file` with `state: touch` is not idempotent
 - name: configure noop
   command: touch /tmp/sansible.nodejs.configure
   args:

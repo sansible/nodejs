@@ -8,6 +8,9 @@ branches:
     - master
 
 language: python
+
+services: []
+
 python:
   - "2.7"
 

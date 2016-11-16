@@ -1,5 +1,6 @@
 ---
 
 nodejs:
+  emergency_switch_to_http_sources: false
   # 4 or 5
   version: 4

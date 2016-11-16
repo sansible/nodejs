@@ -75,6 +75,31 @@ Simply install latest LTS version.
         version: 4
 ```
 
+Turn off https for repo sources:
+
+```YAML
+- name: Install Node.js
+  hosts: sandbox
+
+  pre_tasks:
+    - name: Update apt
+      become: yes
+      apt:
+        cache_valid_time: 1800
+        update_cache: yes
+      tags:
+        - build
+
+  roles:
+    - role: sansible.nodejs
+      nodejs:
+        emergency_switch_to_http_sources: true
+        version: 4
+```
+
+Nodesource have had several SSL issues recently, use this flag to switch to http in case of an emergency.
+
+
 
 
 

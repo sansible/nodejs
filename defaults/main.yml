@@ -3,3 +3,4 @@
 nodejs:
   # 4 or 5
   version: 4
+  workspace_user: ~

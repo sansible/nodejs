@@ -31,3 +31,28 @@
     force: yes
     src: /usr/sbin/nodejs
     state: link
+
+- name: Create NPM code folders for workspace user
+  become: yes
+  file:
+    group: "{{ nodejs.workspace_user }}"
+    name: "/home/{{ nodejs.workspace_user }}/.npm-global"
+    owner: "{{ nodejs.workspace_user }}"
+    state: directory
+  when: nodejs.workspace_user
+
+- name: Set NPM to use workspace user folders
+  become: yes
+  become_user: "{{ nodejs.workspace_user }}"
+  command: "npm config set prefix '/home/{{ nodejs.workspace_user }}/.npm-global'"
+  when: nodejs.workspace_user
+
+- name: Add NPM folder variables to .bashrc for workspace user
+  become: yes
+  become_user: "{{ nodejs.workspace_user }}"
+  lineinfile:
+    create: yes
+    dest: "/home/{{ nodejs.workspace_user }}/.bashrc"
+    insertafter: EOF
+    line: "export PATH=/home/{{ nodejs.workspace_user }}/.npm-global/bin:$PATH"
+  when: nodejs.workspace_user

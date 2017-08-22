@@ -75,6 +75,32 @@ Simply install latest LTS version.
         version: 4
 ```
 
+When using this role you may encounter permission issues when running 
+commands such as NPM as a non-root user (see
+[fixing npm permissions](https://docs.npmjs.com/getting-started/fixing-npm-permissions) 
+for more information). To fix permissions for a particular user you can 
+pass in their name like so:
+
+```YAML
+- name: Install Node.js
+  hosts: sandbox
+
+  pre_tasks:
+    - name: Update apt
+      become: yes
+      apt:
+        cache_valid_time: 1800
+        update_cache: yes
+      tags:
+        - build
+
+  roles:
+    - role: sansible.nodejs
+      nodejs:
+        version: 4
+        workspace_user: some_user
+```
+
 
 
 

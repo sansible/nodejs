@@ -56,3 +56,17 @@
     insertafter: EOF
     line: "export PATH=/home/{{ nodejs.workspace_user }}/.npm-global/bin:$PATH"
   when: nodejs.workspace_user
+
+- name: Install NPMs
+  become: yes
+  npm:
+    executable: "{{ item.executable | default('') }}"
+    global: "{{ item.global | default('no' if item.path is defined else 'yes') }}"
+    ignore_scripts: "{{ item.ignore_scripts | default('no') }}"
+    name: "{{ item.name }}"
+    path: "{{ item.path | default('') }}"
+    production: "{{ item.production | default('no') }}"
+    registry: "{{ item.registry | default('') }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default('') }}"
+  with_items: "{{ nodejs.npms }}"

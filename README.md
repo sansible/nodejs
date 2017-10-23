@@ -75,6 +75,33 @@ Simply install latest LTS version.
         version: 4
 ```
 
+Install latest LTS version, latest lorem-ipsum and v0.15.3 of forever NPMs.
+NPM installation accepts the same arguments as the [Ansible npm module](http://docs.ansible.com/ansible/latest/npm_module.html),
+with the exception that `global` is set to `yes` by default.
+
+```YAML
+- name: Install Node.js
+  hosts: sandbox
+
+  pre_tasks:
+    - name: Update apt
+      become: yes
+      apt:
+        cache_valid_time: 1800
+        update_cache: yes
+      tags:
+        - build
+
+  roles:
+    - role: sansible.nodejs
+      nodejs:
+        version: 4
+        npms:
+          - name: lorem-ipsum
+          - name: forever
+            version: '0.15.3'
+```
+
 When using this role you may encounter permission issues when running 
 commands such as NPM as a non-root user (see
 [fixing npm permissions](https://docs.npmjs.com/getting-started/fixing-npm-permissions) 

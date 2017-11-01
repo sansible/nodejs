@@ -16,6 +16,8 @@
     - role: sansible.nodejs
       nodejs:
         version: 4
+        npms:
+          - name: lorem-ipsum
 
   post_tasks:
     - name: Check node 4 version

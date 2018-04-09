@@ -1,0 +1,22 @@
+---
+
+- name: Converge
+  hosts: all
+
+  pre_tasks:
+    - name: Install apt-transport-https, python-pip
+      become: yes
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+      with_items:
+        - apt-transport-https
+        - python-pip
+
+  roles:
+    - role: nodejs
+      sansible_nodejs_npms:
+        - name: async
+        - name: debug

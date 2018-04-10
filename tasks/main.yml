@@ -4,11 +4,3 @@
   include: build.yml
   tags:
     - build
-
-  # `file` with `state: touch` is not idempotent
-- name: configure noop
-  command: touch /tmp/sansible.nodejs.configure
-  args:
-    creates: /tmp/sansible.nodejs.configure
-  tags:
-    - configure

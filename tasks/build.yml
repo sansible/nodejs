@@ -1,28 +1,37 @@
 ---
 
-- name: Download GPG key
-  command: curl -LO https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-  args:
-    chdir: /tmp
-    creates: /tmp/nodesource.gpg.key
+- name: Install Python Modules
+  become: yes
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pip>=9.0.3
+    - setuptools>=18.5
+    - ndg-httpsclient
+    - pyasn1
+    - pyopenssl
+    - urllib3
 
-- name: Import the NodeSource GPG key into apt
+- name: Import the NodeSource GPG key into APT
   become: yes
   apt_key:
-    file: /tmp/nodesource.gpg.key
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
     state: present
 
 - name: Add NodeSource deb repository
   become: yes
   apt_repository:
-    repo: "deb https://deb.nodesource.com/node_{{ nodejs.version }}.x {{ ansible_distribution_release }} main"
+    repo: "deb https://deb.nodesource.com/node_{{ sansible_nodejs_version }}.x {{ ansible_distribution_release }} main"
     state: present
 
 - name: Install Node.js
   become: yes
   apt:
-    name: "nodejs={{ nodejs.version }}.*"
+    name: "nodejs={{ sansible_nodejs_version }}.*"
     state: present
+    update_cache: yes
+    cache_valid_time: 3600
 
 - name: Symlink nodejs to node
   become: yes
@@ -35,27 +44,27 @@
 - name: Create NPM code folders for workspace user
   become: yes
   file:
-    group: "{{ nodejs.workspace_user }}"
-    name: "/home/{{ nodejs.workspace_user }}/.npm-global"
-    owner: "{{ nodejs.workspace_user }}"
+    group: "{{ sansible_nodejs_workspace_user }}"
+    name: "/home/{{ sansible_nodejs_workspace_user }}/.npm-global"
+    owner: "{{ sansible_nodejs_workspace_user }}"
     state: directory
-  when: nodejs.workspace_user
+  when: sansible_nodejs_workspace_user
 
 - name: Set NPM to use workspace user folders
   become: yes
-  become_user: "{{ nodejs.workspace_user }}"
-  command: "npm config set prefix '/home/{{ nodejs.workspace_user }}/.npm-global'"
-  when: nodejs.workspace_user
+  become_user: "{{ sansible_nodejs_workspace_user }}"
+  command: "npm config set prefix '/home/{{ sansible_nodejs_workspace_user }}/.npm-global'"
+  when: sansible_nodejs_workspace_user
 
 - name: Add NPM folder variables to .bashrc for workspace user
   become: yes
-  become_user: "{{ nodejs.workspace_user }}"
+  become_user: "{{ sansible_nodejs_workspace_user }}"
   lineinfile:
     create: yes
-    dest: "/home/{{ nodejs.workspace_user }}/.bashrc"
+    dest: "/home/{{ sansible_nodejs_workspace_user }}/.bashrc"
     insertafter: EOF
-    line: "export PATH=/home/{{ nodejs.workspace_user }}/.npm-global/bin:$PATH"
-  when: nodejs.workspace_user
+    line: "export PATH=/home/{{ sansible_nodejs_workspace_user }}/.npm-global/bin:$PATH"
+  when: sansible_nodejs_workspace_user
 
 - name: Install NPMs
   become: yes
@@ -69,4 +78,4 @@
     registry: "{{ item.registry | default('') }}"
     state: "{{ item.state | default('present') }}"
     version: "{{ item.version | default('') }}"
-  with_items: "{{ nodejs.npms }}"
+  with_items: "{{ sansible_nodejs_npms }}"

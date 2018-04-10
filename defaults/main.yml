@@ -1,7 +1,5 @@
 ---
 
-nodejs:
-  # 4 or 5
-  version: 4
-  workspace_user: ~
-  npms: [ ]
+sansible_nodejs_npms: []
+sansible_nodejs_workspace_user: ~
+sansible_nodejs_version: 4  # 4 or 5

@@ -8,6 +8,8 @@ platforms:
     image: ubuntu:trusty
   - name: sansible_nodejs-xenial
     image: ubuntu:xenial
+  - name: sansible_nodejs-bionic
+    image: ubuntu:bionic
 
 provisioner:
   name: ansible
@@ -22,11 +24,8 @@ lint:
       ignore: .venv_ansible*
       rules:
         line-length:
-          max: 150
+          max: 179
         truthy: disable
-
-dependency:
-  name: galaxy
 
 scenario:
   name: default

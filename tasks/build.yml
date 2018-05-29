@@ -4,7 +4,6 @@
   become: yes
   pip:
     name: "{{ item }}"
-    state: present
   with_items:
     - pip>=9.0.3
     - setuptools>=18.5
@@ -13,13 +12,13 @@
     - pyopenssl
     - urllib3
 
-- name: Import the NodeSource GPG key into APT
+- name: Import NodeSource GPG Key
   become: yes
   apt_key:
     url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
     state: present
 
-- name: Add NodeSource deb repository
+- name: Add NodeSource Repository
   become: yes
   apt_repository:
     repo: "deb https://deb.nodesource.com/node_{{ sansible_nodejs_version }}.x {{ ansible_distribution_release }} main"
@@ -41,22 +40,29 @@
     src: /usr/sbin/nodejs
     state: link
 
-- name: Create NPM code folders for workspace user
+- name: Create NPM Folder for Workspace User
   become: yes
   file:
     group: "{{ sansible_nodejs_workspace_user }}"
     name: "/home/{{ sansible_nodejs_workspace_user }}/.npm-global"
     owner: "{{ sansible_nodejs_workspace_user }}"
     state: directory
-  when: sansible_nodejs_workspace_user
+  when: sansible_nodejs_workspace_user is not none
 
-- name: Set NPM to use workspace user folders
+- name: Set NPM Prefix for Workspace User
   become: yes
   become_user: "{{ sansible_nodejs_workspace_user }}"
   command: "npm config set prefix '/home/{{ sansible_nodejs_workspace_user }}/.npm-global'"
-  when: sansible_nodejs_workspace_user
+  register: set_prefix
+  changed_when: no
+  when: sansible_nodejs_workspace_user is not none
 
-- name: Add NPM folder variables to .bashrc for workspace user
+- name: Assert Workspace User Set Correctly
+  assert:
+    that: set_prefix.rc == 0
+  when: sansible_nodejs_workspace_user is not none
+
+- name: Add NPM PATH to Workspace User
   become: yes
   become_user: "{{ sansible_nodejs_workspace_user }}"
   lineinfile:
@@ -64,18 +70,19 @@
     dest: "/home/{{ sansible_nodejs_workspace_user }}/.bashrc"
     insertafter: EOF
     line: "export PATH=/home/{{ sansible_nodejs_workspace_user }}/.npm-global/bin:$PATH"
-  when: sansible_nodejs_workspace_user
+  when: sansible_nodejs_workspace_user is not none
 
 - name: Install NPMs
   become: yes
+  become_user: "{{ sansible_nodejs_workspace_user }}"
   npm:
-    executable: "{{ item.executable | default('') }}"
-    global: "{{ item.global | default('no' if item.path is defined else 'yes') }}"
-    ignore_scripts: "{{ item.ignore_scripts | default('no') }}"
+    executable: "{{ item.executable | default(omit) }}"
+    global: "{{ item.global | default(false if item.path is defined else true) }}"
+    ignore_scripts: "{{ item.ignore_scripts | default(false) }}"
     name: "{{ item.name }}"
-    path: "{{ item.path | default('') }}"
-    production: "{{ item.production | default('no') }}"
-    registry: "{{ item.registry | default('') }}"
+    path: "{{ item.path | default(omit) }}"
+    production: "{{ item.production | default(false) }}"
+    registry: "{{ item.registry | default(omit) }}"
     state: "{{ item.state | default('present') }}"
-    version: "{{ item.version | default('') }}"
+    version: "{{ item.version | default(omit) }}"
   with_items: "{{ sansible_nodejs_npms }}"

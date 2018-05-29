@@ -1,4 +1,4 @@
-# nodejsjs
+# nodejs
 
 Master: [![Build Status](https://travis-ci.org/sansible/nodejs.svg?branch=master)](https://travis-ci.org/sansible/nodejs)  
 Develop: [![Build Status](https://travis-ci.org/sansible/nodejs.svg?branch=develop)](https://travis-ci.org/sansible/nodejs)
@@ -18,7 +18,7 @@ or add this to your `roles.yml`
 
 ```YAML
 - name: sansible.nodejs
-  version: v2.0
+  version: v2.1
 ```
 
 and run `ansible-galaxy install -p ./roles -r roles.yml`
@@ -101,7 +101,7 @@ pass in their name like so:
 
   roles:
     - role: sansible.nodejs
-      sansible_nodejs_version: 4
+      sansible_nodejs_version: 9
       sansible_nodejs_workspace_user: some_user
 ```
 

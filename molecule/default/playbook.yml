@@ -3,20 +3,32 @@
 - name: Converge
   hosts: all
 
-  pre_tasks:
-    - name: Install apt-transport-https, python-pip
-      become: yes
-      apt:
-        name: "{{ item }}"
-        state: present
-        update_cache: yes
-        cache_valid_time: 3600
-      with_items:
-        - apt-transport-https
-        - python-pip
-
   roles:
     - role: nodejs
       sansible_nodejs_npms:
-        - name: async
+        - name: lorem-ipsum
         - name: debug
+          global: no
+          path: /root/.npm-local/
+      sansible_nodejs_version: 4
+      when: ansible_distribution_release == "trusty"
+
+    - role: nodejs
+      sansible_nodejs_npms:
+        - name: lorem-ipsum
+        - name: debug
+          global: no
+          path: /home/nodejs_test/.npm-local/
+      sansible_nodejs_workspace_user: nodejs_test
+      sansible_nodejs_version: 7
+      when: ansible_distribution_release == "xenial"
+
+    - role: nodejs
+      sansible_nodejs_npms:
+        - name: lorem-ipsum
+        - name: debug
+          global: no
+          path: /home/nodejs_test/.npm-local/
+      sansible_nodejs_workspace_user: nodejs_test
+      sansible_nodejs_version: 10
+      when: ansible_distribution_release == "bionic"

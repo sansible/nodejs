@@ -18,7 +18,7 @@ or add this to your `roles.yml`
 
 ```YAML
 - name: sansible.nodejs
-  version: v2.1
+  version: v3.1
 ```
 
 and run `ansible-galaxy install -p ./roles -r roles.yml`
